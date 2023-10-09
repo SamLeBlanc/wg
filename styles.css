@@ -1,0 +1,75 @@
+#circle-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+input[type="text" i] {
+    border: none;
+    outline: none;
+    background: transparent;
+    text-align: center;
+    font-size: 4vh;
+    color: white;
+}
+
+#word-container{
+    padding-bottom: 2vh;
+}
+
+#button-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#word-list {
+    width: 100%;
+    text-align: center;
+}
+
+#wordCanvas {
+    display: block; 
+    border: none;    
+    margin: 0;   
+    padding: 0; 
+}
+
+body {    
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: transparent; /* A nice shade of blue */
+    color: white; /* White text */
+    border: 2px solid white;
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Hand cursor on hover */
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Transition for a smooth color change */
+    text-decoration: none; /* Removes underline if the button is a link */
+    outline: none; /* Removes the default browser outline */
+    margin: 0px 5px;
+}
