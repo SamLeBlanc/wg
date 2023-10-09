@@ -8,15 +8,17 @@
 </head>
 <body>
     <div id="circle-container"></div>
-    <div id="word-container">
-        <input id="word-input" type="text" placeholder="Enter a word">
+    <div id='info'>
+        <div id="word-container">
+            <input id="word-input" type="text" placeholder="TBD">
+        </div>
+        <div id="button-container">
+            <button onclick="submitWord()">Submit</button>
+            <button onclick="shuffleLetters()">Shuffle</button>
+            <button onclick="setupGame()">Restart</button>
+        </div>
+        <div id="word-list"></div>
     </div>
-    <div id="button-container">
-        <button onclick="submitWord()">Submit</button>
-        <button onclick="shuffleLetters()">Shuffle</button>
-        <button onclick="setupGame()">Restart</button>
-    </div>
-    <div id="word-list"></div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="script.js"></script>
 </body>
