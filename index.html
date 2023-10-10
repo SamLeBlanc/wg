@@ -11,24 +11,28 @@
 
 </head>
 <body>
-    <div id="button-container-top">
-    </div>
+
     <div id="circle-container"></div>
-    <div id='info'>
-        <div id="word-container">
-            <div id="word-input-div">
-                <span id="word-input">PANDAGRAM</span>
-                <img id="panda" src="panda.png" alt="panda">
-            </div>
-            <button id="submit-button" onclick="submitWord()">4 Letter Min</button>
+
+    <div id="word-container">
+        <div id="word-input-div">
+            <span id="word-input">PANDAGRAM</span>
+            <img id="panda" src="panda.png" alt="panda">
         </div>
+        <div id="button-container-middle">
+            <button id="submit-button" onclick="submitWord()">4 Letter Min</button>
+            <button id="clear-button" onclick="clearWord()">Clear</button>
+        </div>
+
+    </div>
+    <div id='info'>
+
         <div id="word-list">
             Use as each letter in as few words as possible. Letters cannot be re-used within a word.
             <br>
             Max Score: 1
         </div>
     </div>
-
     <div id="button-container-bottom">
         <button onclick="shuffleLetters()">Shuffle</button>
         <button onclick="setupGame(rand=false)">Restart</button>

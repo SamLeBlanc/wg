@@ -69,7 +69,7 @@ function setupGame(rand=false) {
 
     // Set up the simulation
     simulation = d3.forceSimulation(letters)
-        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("center", d3.forceCenter(width / 2, height / 3.5))
         .force("collide", d3.forceCollide().radius(d => d.r + 3).iterations(10).strength(1))
         .force("x", d3.forceX(width / 2).strength(0.03))
         .force("y", d3.forceY(height / 2).strength(0.03))
@@ -79,13 +79,7 @@ function setupGame(rand=false) {
             if (tickCounter >= 200) {
                 simulation.stop();
             }
-        });
-
-    // Restart the simulation with the original letters
-    simulation.nodes(letters).alpha(1).restart();
-
-    // Set focus on the input
-    
+        }); 
 
     tickCounter = 0;
     newRun = false;
@@ -243,8 +237,6 @@ canvas.addEventListener("click", event => {
         
         drawCircles();  // Redraw circles to reflect changes.
     }
-
-    // Set focus back to the input
     
 });
 
@@ -259,6 +251,30 @@ async function isDictionaryWord(word) {
         return false;
     }
 }
+
+const clearWord = () => {
+    const input = document.getElementById('word-input');
+
+    // Revert pending letters to their saved state
+    for (let id in letterTracker) {
+        if (letterTracker[id].state === 'pending') {
+            // Check if the letter was previously in valid words
+            if (letterTracker[id].words.length > 0) {
+                letterTracker[id].state = 'used';
+            } else {
+                letterTracker[id].state = 'default';
+            }
+        }
+    }
+
+    // Clear the currentWordLetterIDs set
+    currentWordLetterIDs.clear();
+
+    // Reset input value
+    input.textContent = "PANDAGRAM";
+    input.style.color = "white";
+    drawCircles();
+};
 
 const submitWord = async () => {
     const input = document.getElementById('word-input');
@@ -289,7 +305,7 @@ const submitWord = async () => {
             // Reset input value
             input.textContent = "PANDAGRAM";
             input.style.color = "white";
-            simulation.nodes(letters).alpha(1).restart();
+            drawCircles();
             return;
 
          }, 2000);
@@ -325,8 +341,8 @@ const submitWord = async () => {
 
 
     wordList.insertAdjacentHTML('beforeend', `<span class='used-word' onclick="removeWord(this, [${processedIds}])">${inputValue}</span>`);
-    tickCounter = 0;
-    simulation.nodes(letters).alpha(1).restart();
+
+    drawCircles();
     input.textContent = "PANDAGRAM";
     checkWin();
     
@@ -354,9 +370,8 @@ function removeWord(elem, ids) {
             Letters cannot be re-used within a word.
         </div>`;
         }
-        tickCounter = 0;
-        simulation.nodes(letters).alpha(1).restart();
-        drawCircles(); // Refresh the board
+
+        drawCircles(); 
         checkWin();
     }, 2000);
         
@@ -370,49 +385,6 @@ const checkWin = () => {
 };
 
 let draggedCircle = null;
-
-canvas.addEventListener("mousedown", event => {
-    const { left, top } = canvas.getBoundingClientRect();
-    const x = event.clientX - left;
-    const y = event.clientY - top;
-
-    // Fix the positions of all nodes
-    letters.forEach(l => {
-        l.fx = l.x;
-        l.fy = l.y;
-    });
-
-    draggedCircle = letters.find(d => Math.hypot(d.x - x, d.y - y) < d.r);
-    if (draggedCircle) {
-        draggedCircle.fx = draggedCircle.x;
-        draggedCircle.fy = draggedCircle.y;
-        simulation.alphaTarget(0.3).restart();
-    }
-});
-
-canvas.addEventListener("mousemove", event => {
-    if (draggedCircle) {
-        const { left, top } = canvas.getBoundingClientRect();
-        const x = event.clientX - left;
-        const y = event.clientY - top;
-        draggedCircle.fx = x;
-        draggedCircle.fy = y;
-        tickCounter = 0;
-        simulation.alpha(1).restart();
-    }
-});
-
-canvas.addEventListener("mouseup", () => {
-    if (draggedCircle) {
-        // Release the positions of all nodes
-        letters.forEach(l => {
-            l.fx = null;
-            l.fy = null;
-        });
-        draggedCircle = null;
-        simulation.alphaTarget(0.5).restart();
-    }
-});
 
 
 function updateWordInput(newLetter) {
@@ -506,23 +478,15 @@ canvas.addEventListener("touchend", (event) => {
         const distanceMoved = Math.hypot(touchStartPosition.x - x, touchStartPosition.y - y);
         
         // If the touch moved very little, treat it as a click
-        if (distanceMoved < 10) {  
+        if (distanceMoved < 25) {  
             const clickedCircle = letters.find(d => Math.hypot(d.x - x, d.y - y) < d.r);
             
             if (clickedCircle && !currentWordLetterIDs.has(clickedCircle.id)) {
-                const currentLetter = clickedCircle.letter;
-                const allOccurrencesOfLetter = [...word].filter(l => l === currentLetter).length;
-                const usedOccurrencesOfLetter = Object.values(letterTracker).filter(l => l.letter === currentLetter && l.state === 'used').length;
-                const pendingOccurrencesOfLetter = Object.values(letterTracker).filter(l => l.letter === currentLetter && l.state === 'pending').length;
-
-                if (usedOccurrencesOfLetter + pendingOccurrencesOfLetter < allOccurrencesOfLetter) {
-                    if (document.getElementById('word-input').textContent === "PANDAGRAM") document.getElementById('word-input').textContent = "";
+                if (document.getElementById('word-input').textContent === "PANDAGRAM") document.getElementById('word-input').textContent = "";
                     document.getElementById('word-input').textContent += clickedCircle.letter;
                     letterTracker[clickedCircle.id].state = 'pending';
                     drawCircles();  // Redraw circles to reflect changes.
-                }
 
-                console.log(document.getElementById('word-input').textContent);
                 if (document.getElementById('word-input').textContent.length > 3){
                     document.getElementById('submit-button').textContent = "Submit";
                 } else {
@@ -552,7 +516,7 @@ canvas.addEventListener("touchend", (event) => {
         });
 
         draggedCircle = null;
-        simulation.alphaTarget(0.5).restart();
+        drawCircles();
     }
 });
 

@@ -8,6 +8,14 @@
 
 }
 
+#button-container-top{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+}
+
 #button-container-bottom{
     position: fixed;
     bottom: 10px;
@@ -71,6 +79,8 @@ input[type="text" i] {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: fixed;
+    bottom: 200px;
 }
 
 #word-input-div{
@@ -96,7 +106,7 @@ input[type="text" i] {
 }
 
 .used-word{
-    padding: 1.5vh 3vh;
+    padding: 1.5vh 2vh;
     font-size: 2.5vh;
     pointer-events: all;
 }
@@ -122,9 +132,14 @@ body {
 }
 
 #info{
-    padding: 10px;
-    position: absolute;
     color: white;
+    padding-bottom: 2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 100px;
 }
 
 button {
