@@ -1,16 +1,3 @@
-let puzzleNumber = Math.floor(Math.random() * 21);
-document.getElementById('newButton').textContent = `Puzzle ${puzzleNumber}`;
-
-let letters;
-let letterTracker = {};
-let tickCounter = 0;
-let simulation;
-let word;
-let newRun = true;
-let touchStartPosition = { x: 0, y: 0 };
-
-let currentWordLetterIDs = new Set();
-
 const puzzles = {
     0: "DikembeMutomboMpolondoMukambaJeanJacquesWamutombo",
     1: "supercalifragilisticexpialidocious",
@@ -32,13 +19,131 @@ const puzzles = {
     17: "neurotransmitter",
     18: "circumnavigation",
     19: "mischaracterization",
-    20: "nonproliferation"
+    20: "nonproliferation",
+    21: "Basketball",
+    22: "Perpendicular",
+    23: "Disappointed",
+    24: "Exaggeration",
+    25: "Entrepreneur",
+    26: "Illumination",
+    27: "Butterfingers",
+    28: "Celebrations",
+    29: "Refrigerator",
+    30: "Preservation",
+    31: "Relationships",
+    32: "Technological",
+    33: "Insignificant",
+    34: "Continuation",
+    35: "Appreciation",
+    36: "Bittersweet",
+    37: "Unbelievable",
+    38: "Celebrations",
+    39: "Independent",
+    40: "Thunderstorm",
+    41: "Electricity",
+    42: "Manipulation",
+    43: "Infiltration",
+    44: "Destruction",
+    45: "Refreshments",
+    46: "Entanglement",
+    47: "Exponential",
+    48: "Exhilaration",
+    49: "Discrepancy",
+    50: "Collaborate",
+    51: "Photographs",
+    52: "Coexistence",
+    53: "Celebratory",
+    54: "Overlapping",
+    55: "Illustration",
+    56: "Propagation",
+    57: "Assumptions",
+    58: "Satisfactory",
+    59: "Disposition",
+    60: "Defenestrate",
+    61: "Substantial",
+    62: "Explanatory",
+    63: "Disassemble",
+    64: "Perseverance",
+    65: "Consequences",
+    66: "Surroundings",
+    67: "Generations",
+    68: "Beneficiary",
+    69: "Exploration",
+    70: "Translation",
+    71: "Spectacular",
+    72: "Persuasion",
+    73: "Exclamation",
+    74: "Reflections",
+    75: "Inconsistent",
+    76: "Annihilation",
+    77: "Remembering",
+    78: "Constructed",
+    79: "Butterflies",
+    80: "Compliments",
+    81: "Replenished",
+    82: "Resplendent",
+    83: "Astonishing",
+    84: "Unexpected",
+    85: "Terrestrial",
+    86: "Development",
+    87: "Subtraction",
+    88: "Synchronized",
+    89: "Revelations",
+    90: "Incantation",
+    91: "Combination",
+    92: "Information",
+    93: "Infiltrator",
+    94: "Distraction",
+    95: "Comprehend",
+    96: "Attraction",
+    97: "Enchantment",
+    98: "Repetitions",
+    99: "Refreshment",
+    100: "Apprehended",
+    101: "Applicators",
+    102: "Restoration",
+    103: "Complicated",
+    104: "Celebrating",
+    105: "Repetitive",
+    106: "Intolerable",
+    107: "Celebrated",
+    108: "Involvement",
+    109: "Groundbreaking",
+    110: "Commitments",
+    111: "Perpetuated",
+    112: "Revolution",
+    113: "Sensational",
+    114: "Connection",
+    115: "Replicated",
+    116: "Commission",
+    117: "Deliciously",
+    118: "Beneficial",
+    119: "Reclamation",
+    120: "Recollection"
 };
+
+const puzzleCount = Object.keys(puzzles).length;
+
+let puzzleNumber = Math.floor(Math.random() * puzzleCount);
+document.getElementById('newButton').textContent = `Puzzle ${puzzleNumber}`;
+
+let letters;
+let letterTracker = {};
+let tickCounter = 0;
+let simulation;
+let word;
+let newRun = true;
+let touchStartPosition = { x: 0, y: 0 };
+
+let currentWordLetterIDs = new Set();
+
+
+
 
 function setupGame(rand=false) {
 
     if (rand) {
-        puzzleNumber = Math.floor(Math.random() * 21);
+        puzzleNumber = Math.floor(Math.random() * puzzleCount);
         document.getElementById('newButton').textContent = `Puzzle ${puzzleNumber}`;
     }
 
