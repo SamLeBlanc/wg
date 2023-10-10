@@ -9,6 +9,8 @@ let word;
 let newRun = true;
 let touchStartPosition = { x: 0, y: 0 };
 
+let currentWordLetterIDs = new Set();
+
 const puzzles = {
     0: "DikembeMutomboMpolondoMukambaJeanJacquesWamutombo",
     1: "supercalifragilisticexpialidocious",
@@ -217,7 +219,7 @@ canvas.addEventListener("click", event => {
     // Find if a circle was clicked
     const clickedCircle = letters.find(d => Math.hypot(d.x - x, d.y - y) < d.r);
 
-    if (clickedCircle) {
+    if (clickedCircle && !currentWordLetterIDs.has(clickedCircle.id)) {
         const currentLetter = clickedCircle.letter;
 
         // Count how many times this letter occurs in the word
@@ -234,6 +236,9 @@ canvas.addEventListener("click", event => {
 
             // Using the id directly to update letterTracker
             letterTracker[clickedCircle.id].state = 'pending';
+
+            // Add the ID to the currentWordLetterIDs set
+            currentWordLetterIDs.add(clickedCircle.id);
         }
         
         drawCircles();  // Redraw circles to reflect changes.
@@ -277,6 +282,9 @@ const submitWord = async () => {
                     }
                 }
             }
+
+             // Clear the currentWordLetterIDs set
+            currentWordLetterIDs.clear();
             
             // Reset input value
             input.textContent = "PANDAGRAM";
@@ -311,6 +319,11 @@ const submitWord = async () => {
     if (document.getElementsByClassName('used-word').length === 0) {
         wordList.innerHTML = "";
     }
+
+    // Clear the currentWordLetterIDs set
+    currentWordLetterIDs.clear();
+
+
     wordList.insertAdjacentHTML('beforeend', `<span class='used-word' onclick="removeWord(this, [${processedIds}])">${inputValue}</span>`);
     tickCounter = 0;
     simulation.nodes(letters).alpha(1).restart();
@@ -496,7 +509,7 @@ canvas.addEventListener("touchend", (event) => {
         if (distanceMoved < 10) {  
             const clickedCircle = letters.find(d => Math.hypot(d.x - x, d.y - y) < d.r);
             
-            if (clickedCircle) {
+            if (clickedCircle && !currentWordLetterIDs.has(clickedCircle.id)) {
                 const currentLetter = clickedCircle.letter;
                 const allOccurrencesOfLetter = [...word].filter(l => l === currentLetter).length;
                 const usedOccurrencesOfLetter = Object.values(letterTracker).filter(l => l.letter === currentLetter && l.state === 'used').length;
@@ -515,6 +528,9 @@ canvas.addEventListener("touchend", (event) => {
                 } else {
                     document.getElementById('submit-button').textContent = "4 Letter Min";
                 }
+
+                // Add the ID to the currentWordLetterIDs set
+                currentWordLetterIDs.add(clickedCircle.id);
             }
         }
 
