@@ -80,7 +80,7 @@ input[type="text" i] {
     align-items: center;
     justify-content: center;
     position: fixed;
-    bottom: 200px;
+    bottom: 110px;
 }
 
 #word-input-div{
@@ -139,7 +139,7 @@ body {
     align-items: center;
     justify-content: center;
     position: fixed;
-    bottom: 100px;
+    bottom: 60px;
 }
 
 button {
