@@ -1,9 +1,48 @@
+#button-container-top{
+    position: fixed;
+    top: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#button-container-bottom{
+    position: fixed;
+    bottom: 10px;
+        position: fixed;
+    bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+
+}
+
+#word-input{
+    text-align: center;
+    font-size: 4vh;
+    color: white;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+}
+
 #circle-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
     margin-bottom: 20px;
+
 }
 
 .circle {
@@ -28,6 +67,21 @@ input[type="text" i] {
 
 #word-container{
     padding-bottom: 2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#word-input-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#panda{
+    height:50px;
 }
 
 #button-container {
@@ -38,6 +92,13 @@ input[type="text" i] {
 #word-list {
     width: 100%;
     text-align: center;
+    pointer-events: none;
+}
+
+.used-word{
+    padding: 1.5vh 3vh;
+    font-size: 2.5vh;
+    pointer-events: all;
 }
 
 #wordCanvas {
@@ -57,6 +118,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: 'Belanosima', sans-serif;
 }
 
 #info{
@@ -78,4 +140,5 @@ button {
     text-decoration: none; /* Removes underline if the button is a link */
     outline: none; /* Removes the default browser outline */
     margin: 0px 5px;
+    font-family: 'Belanosima';
 }

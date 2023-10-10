@@ -1,3 +1,6 @@
+let puzzleNumber = Math.floor(Math.random() * 21);
+document.getElementById('newButton').textContent = `Puzzle ${puzzleNumber}`;
+
 let letters;
 let letterTracker = {};
 let tickCounter = 0;
@@ -6,11 +9,40 @@ let word;
 let newRun = true;
 let touchStartPosition = { x: 0, y: 0 };
 
+const puzzles = {
+    0: "DikembeMutomboMpolondoMukambaJeanJacquesWamutombo",
+    1: "supercalifragilisticexpialidocious",
+    2: "antidisestablishmentarianism",
+    3: "floccinaucinihilipilification",
+    4: "pneumonoultramicroscopicsilicovolcanoconiosis",
+    5: "hippopotomonstrosesquippedaliophobia",
+    6: "hydrochlorofluorocarbon",
+    7: "counterdemonstration",
+    8: "uncharacteristically",
+    9: "overenthusiastically",
+    10: "anthropomorphization",
+    11: "deinstitutionalizing",
+    12: "nonrepresentational",
+    13: "disproportionality",
+    14: "counterintelligence",
+    15: "tetrahydrocannabinol",
+    16: "antienvironmentalist",
+    17: "neurotransmitter",
+    18: "circumnavigation",
+    19: "mischaracterization",
+    20: "nonproliferation"
+};
 
-function setupGame() {
+function setupGame(rand=false) {
+
+    if (rand) {
+        puzzleNumber = Math.floor(Math.random() * 21);
+        document.getElementById('newButton').textContent = `Puzzle ${puzzleNumber}`;
+    }
+
     newRun = true
     // Reset the letters
-    word = "supercalifragilisticexpialidocious".toUpperCase().split('').sort(() => Math.random() - 0.5).join('');
+    word = puzzles[puzzleNumber].toUpperCase().split('').sort(() => Math.random() - 0.5).join('');
     letters = [...word].map((letter, id) => ({ letter, id, r: 25 }));
 
     // Initialize letter tracker
@@ -24,8 +56,13 @@ function setupGame() {
     });
 
     // Reset the input value and word list
-    document.getElementById('word-input').value = "";
-    document.getElementById('word-list').innerHTML = "";
+    document.getElementById('word-input').textContent = "PANDAGRAM";
+    document.getElementById('word-list').innerHTML = `
+    <div id="word-list">
+    Use each letter at least once in as few words as possible. 
+    <br>
+    Letters cannot be re-used within a word.
+</div>`;
 
 
     // Set up the simulation
@@ -46,7 +83,7 @@ function setupGame() {
     simulation.nodes(letters).alpha(1).restart();
 
     // Set focus on the input
-    document.getElementById('word-input').focus();
+    
 
     tickCounter = 0;
     newRun = false;
@@ -91,9 +128,9 @@ const circleStyle = {
         pending: "white"
     },
     font: {
-        default: "24px Georgia",
-        used: "24px Georgia",
-        pending: "bold 24px Georgia"
+        default: "24px Belanosima",
+        used: "24px Belanosima",
+        pending: "bold 24px Belanosima"
     },
     fontColor: {
         default: "white",
@@ -105,7 +142,7 @@ const circleStyle = {
         used: "green",
         pending: "grey"
     },
-    lineWidth: 2,
+    lineWidth: 4,
     textAlign: "center",
     textBaseline: "middle"
 };
@@ -192,7 +229,8 @@ canvas.addEventListener("click", event => {
 
         // If there are still unused occurrences of this letter, add it to the input and mark as pending
         if (usedOccurrencesOfLetter + pendingOccurrencesOfLetter < allOccurrencesOfLetter) {
-            document.getElementById('word-input').value += clickedCircle.letter;
+            if (document.getElementById('word-input').textContent === "PANDAGRAM") document.getElementById('word-input').textContent = "";
+            document.getElementById('word-input').textContent += clickedCircle.letter;
 
             // Using the id directly to update letterTracker
             letterTracker[clickedCircle.id].state = 'pending';
@@ -202,7 +240,7 @@ canvas.addEventListener("click", event => {
     }
 
     // Set focus back to the input
-    document.getElementById('word-input').focus();
+    
 });
 
 
@@ -220,29 +258,36 @@ async function isDictionaryWord(word) {
 const submitWord = async () => {
     const input = document.getElementById('word-input');
     const wordList = document.getElementById('word-list');
-    const inputValue = input.value;
+    const inputValue = input.textContent;
 
     // Validate the input is in the dictionary
     const isLegitWord = await isDictionaryWord(inputValue.toLowerCase());
     if (!isLegitWord) {
-        alert("That's not a recognized word!");
-
-        // Revert pending letters to their saved state
-        for (let id in letterTracker) {
-            if (letterTracker[id].state === 'pending') {
-                // Check if the letter was previously in valid words
-                if (letterTracker[id].words.length > 0) {
-                    letterTracker[id].state = 'used';
-                } else {
-                    letterTracker[id].state = 'default';
+        input.style.color = "red";
+        setTimeout(function() {
+            
+            // Revert pending letters to their saved state
+            for (let id in letterTracker) {
+                if (letterTracker[id].state === 'pending') {
+                    // Check if the letter was previously in valid words
+                    if (letterTracker[id].words.length > 0) {
+                        letterTracker[id].state = 'used';
+                    } else {
+                        letterTracker[id].state = 'default';
+                    }
                 }
             }
-        }
+            
+            // Reset input value
+            input.textContent = "PANDAGRAM";
+            input.style.color = "white";
+            simulation.nodes(letters).alpha(1).restart();
+            return;
+
+         }, 2000);
         
-        // Reset input value
-        input.value = "";
-        simulation.nodes(letters).alpha(1).restart();
         return;
+
     }
 
     // Update letter tracker for the submitted word
@@ -263,31 +308,47 @@ const submitWord = async () => {
         }
     });
         
-
-    wordList.insertAdjacentHTML('beforeend', `<div onclick="removeWord(this, [${processedIds}])">${inputValue}</div>`);
+    if (document.getElementsByClassName('used-word').length === 0) {
+        wordList.innerHTML = "";
+    }
+    wordList.insertAdjacentHTML('beforeend', `<span class='used-word' onclick="removeWord(this, [${processedIds}])">${inputValue}</span>`);
     tickCounter = 0;
     simulation.nodes(letters).alpha(1).restart();
-    input.value = "";
+    input.textContent = "PANDAGRAM";
     checkWin();
-    document.getElementById('word-input').focus();
+    
 };
 
 
 function removeWord(elem, ids) {
-    ids.forEach(id => {
-        const tracker = letterTracker[id];
-        tracker.words = tracker.words.filter(word => !elem.textContent.includes(word));
+    elem.style.color = "red";
+    setTimeout(function() {
+        ids.forEach(id => {
+            const tracker = letterTracker[id];
+            tracker.words = tracker.words.filter(word => !elem.textContent.includes(word));
 
-        // If the letter is not in any other words, set its state to 'default'
-        if (tracker.words.length === 0 && tracker.state !== 'default') {
-            tracker.state = 'default';
+            // If the letter is not in any other words, set its state to 'default'
+            if (tracker.words.length === 0 && tracker.state !== 'default') {
+                tracker.state = 'default';
+            }
+        });
+        elem.remove();
+        if (document.getElementsByClassName('used-word').length === 0) {
+            document.getElementById('word-list').innerHTML = `
+            <div id="word-list">
+            Use each letter at least once in as few words as possible. 
+            <br>
+            Letters cannot be re-used within a word.
+        </div>`;
         }
-    });
-    elem.remove();
-    tickCounter = 0;
-    simulation.nodes(letters).alpha(1).restart();
-    drawCircles(); // Refresh the board
-    checkWin();
+        tickCounter = 0;
+        simulation.nodes(letters).alpha(1).restart();
+        drawCircles(); // Refresh the board
+        checkWin();
+    }, 2000);
+        
+    return;
+
 }
 
 
@@ -316,7 +377,6 @@ canvas.addEventListener("mousedown", event => {
     }
 });
 
-
 canvas.addEventListener("mousemove", event => {
     if (draggedCircle) {
         const { left, top } = canvas.getBoundingClientRect();
@@ -342,16 +402,17 @@ canvas.addEventListener("mouseup", () => {
 });
 
 
-const input = document.getElementById('word-input');
+function updateWordInput(newLetter) {
+    const inputSpan = document.getElementById('word-input');
+    inputSpan.textContent += newLetter;
 
-input.addEventListener("input", function() {
     let letterCounts = {};
 
-    for (let char of this.value) {
+    for (let char of inputSpan.textContent) {
         letterCounts[char] = (letterCounts[char] || 0) + 1;
     }
 
-    this.value = Array.from(this.value).filter(char => {
+    inputSpan.textContent = Array.from(inputSpan.textContent).filter(char => {
         const charCountInWord = word.split(char).length - 1;
         if (letterCounts[char] > charCountInWord) {
             letterCounts[char]--;
@@ -361,14 +422,16 @@ input.addEventListener("input", function() {
     }).join('');
 
     for (const id in letterTracker) {
-        if (this.value.includes(letterTracker[id].letter)) {
+        if (inputSpan.textContent.includes(letterTracker[id].letter)) {
             letterTracker[id].state = 'pending';
         } else if (letterTracker[id].words.length === 0) {
             letterTracker[id].state = 'default';
         }
     }
+
     drawCircles();
-});
+}
+
 
 function shuffleLetters() {
     // Randomize the positions of the letters
@@ -380,7 +443,7 @@ function shuffleLetters() {
     // Reheat the simulation to animate the letters back into position
     tickCounter = 0;
     simulation.alpha(1).restart();
-    document.getElementById('word-input').focus();
+    
 }
 
 canvas.addEventListener("touchstart", event => {
@@ -440,9 +503,17 @@ canvas.addEventListener("touchend", (event) => {
                 const pendingOccurrencesOfLetter = Object.values(letterTracker).filter(l => l.letter === currentLetter && l.state === 'pending').length;
 
                 if (usedOccurrencesOfLetter + pendingOccurrencesOfLetter < allOccurrencesOfLetter) {
-                    document.getElementById('word-input').value += clickedCircle.letter;
+                    if (document.getElementById('word-input').textContent === "PANDAGRAM") document.getElementById('word-input').textContent = "";
+                    document.getElementById('word-input').textContent += clickedCircle.letter;
                     letterTracker[clickedCircle.id].state = 'pending';
                     drawCircles();  // Redraw circles to reflect changes.
+                }
+
+                console.log(document.getElementById('word-input').textContent);
+                if (document.getElementById('word-input').textContent.length > 3){
+                    document.getElementById('submit-button').textContent = "Submit";
+                } else {
+                    document.getElementById('submit-button').textContent = "4 Letter Min";
                 }
             }
         }
@@ -473,4 +544,4 @@ canvas.addEventListener("touchend", (event) => {
 
 
 // Initialize the game on window load
-window.onload = setupGame;
+setupGame(puzzleNumber);
